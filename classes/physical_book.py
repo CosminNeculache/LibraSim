@@ -1,10 +1,10 @@
 from datetime import datetime
-from book import Book
+from .book import Book
 
 
 class PhysicalBook(Book):
 
-    def __init__(self, title, writer, shelf, status, publishing_house, library):
+    def __init__(self, title, writer, shelf, status, publishing_house, library=None):
         super().__init__(title, writer)
         self.shelf = shelf
         self.status = status
