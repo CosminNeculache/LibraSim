@@ -9,9 +9,10 @@ class PhysicalBook(Book):
         self.shelf = shelf
         self.status = status
         self.publishing_house = publishing_house
+        self.library = library
         self.return_date = datetime.now()
         self.borrowed_to = None
-        self.library = library
+
         library.add_book(self)
 
     def __repr__(self):

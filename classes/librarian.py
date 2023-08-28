@@ -1,16 +1,11 @@
 from .person import Person
-from .member import Member
 
 
 class Librarian(Person):
-    def __init__(self, first_name, last_name, age, employment_date):
-        super().__init__(first_name, last_name, age)
+    def __init__(self, first_name, last_name, age, email, employment_date, library):
+        super().__init__(first_name, last_name, age, email)
         self.employment_date = employment_date
-
-    def register_member(self, first_name, last_name, age, member_id, email, library):
-        new_member = Member(first_name, last_name, age, member_id, [], email, library)
-        library.register_member(new_member)
-        return new_member
+        self.library = library
 
     def check_disponibility(self, physical_book):
         if physical_book.status == "available":

@@ -1,4 +1,5 @@
 from datetime import datetime
+from LibraSim.classes.member import Member
 
 
 class Library:
@@ -8,11 +9,13 @@ class Library:
         self.librarian = librarian
         self.email_sender = email_sender
 
+    def register_member(self, first_name, last_name, age, email, member_id):
+        new_member = Member(first_name, last_name, age, email, member_id, [])
+        self.members.append(new_member)
+        return new_member
+
     def add_book(self, book):
         self.books.append(book)
-
-    def register_member(self, member):
-        self.members.append(member)
 
     def print_books(self):
         print("List of books:")
@@ -31,11 +34,11 @@ class Library:
         return borrowed_books
 
     def get_overdue_books(self):
-        overdue_books = set()
+        overdue_books = []
         for member in self.members:
             for book in member.borrowed_books:
                 if book.return_date < datetime.now():
-                    overdue_books.add((member, book))
+                    overdue_books.extend((member, book))
         return overdue_books
 
     def __repr__(self):
