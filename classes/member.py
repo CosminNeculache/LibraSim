@@ -4,14 +4,13 @@ from datetime import timedelta, datetime
 
 class Member(Person):
 
-    def __init__(self, first_name, last_name, age, member_id, borrowed_books, email, library=None):
+    def __init__(self, first_name, last_name, age, member_id, borrowed_books, email, library):
         super().__init__(first_name, last_name, age)
         self.member_id = member_id
         self.borrowed_books = borrowed_books
         self.email = email
         self.library = library
-        if library:
-            library.register_member(self)
+        library.register_member(self)
 
     def borrow_book(self, physical_book):
         self.borrowed_books.append(physical_book)
