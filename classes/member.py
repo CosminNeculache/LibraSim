@@ -9,10 +9,9 @@ class Member(Person):
         self.member_id = member_id
         self.borrowed_books = borrowed_books
 
-
     def borrow_book(self, physical_book):
         self.borrowed_books.append(physical_book)
-        physical_book.return_date -= timedelta(weeks=4)
+        physical_book.return_date += timedelta(weeks=4)
         physical_book.status = "unavailable"
         physical_book.borrowed_to = self.member_id
 
