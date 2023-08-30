@@ -34,11 +34,11 @@ class Library:
         return borrowed_books
 
     def get_overdue_books(self):
-        overdue_books = []
+        overdue_books = set()
         for member in self.members:
             for book in member.borrowed_books:
                 if book.return_date < datetime.now():
-                    overdue_books.extend((member, book))
+                    overdue_books.add((member, book))
         return overdue_books
 
     def __repr__(self):
