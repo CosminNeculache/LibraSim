@@ -1,42 +1,42 @@
 import unittest
 from LibraSim.classes.library import Library
-from LibraSim.classes.book import Book
 from LibraSim.classes.member import Member
+from LibraSim.classes.physical_book import PhysicalBook
 from unittest.mock import patch
 from io import StringIO
+from datetime import datetime, timedelta
 
 
 class TestLibrary(unittest.TestCase):
     def setUp(self):
-        self.library = Library("John", "email@example.com")
+        self.library = Library(None, None)
+        self.member1 = Member('John', 'Snow', 47, 'john@example.com', '002', [])
+        self.member2 = Member('Sam', 'Smith', 33, 'sam@example.com', '003', [])
+        self.book1 = PhysicalBook("Book 1", "Author 1", "Shelf 1", "available", "Publisher 1", self.library)
+        self.book2 = PhysicalBook("Book 2", "Author 2", "Shelf 2", "available", "Publisher 2", self.library)
+        self.library.members.append(self.member1)
+        self.library.members.append(self.member2)
         self.books = []
         self.members = []
+        self.today = datetime.now()
 
     def test_init(self):
         self.assertEqual(self.books, [])
         self.assertEqual(self.members, [])
 
     def test_register_members(self):
-        self.library.members.append("Member 1")
-        self.library.members.append("Member 2")
-
-        self.assertIn("Member 1", self.library.members)
-        self.assertIn("Member 2", self.library.members)
+        self.assertIn(self.member1, self.library.members)
+        self.assertIn(self.member2, self.library.members)
 
     def test_add_books(self):
-        self.library.books.append("Book 1")
-        self.library.books.append("Book 2")
-
-        self.assertIn("Book 1", self.library.books)
-        self.assertIn("Book 2", self.library.books)
+        self.assertIn(self.book1, self.library.books)
+        self.assertIn(self.book2, self.library.books)
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_print_books(self, mock_stdout):
-        book1 = Book("Book 1", "Author 1")
-        book2 = Book("Book 2", "Author 2")
-
-        self.library.books.append(book1)
-        self.library.books.append(book2)
+        self.library.books = []
+        self.library.books.append(self.book1)
+        self.library.books.append(self.book2)
 
         expected_output = "List of books:\nBook 1\nBook 2\n"
 
@@ -45,12 +45,6 @@ class TestLibrary(unittest.TestCase):
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_print_members(self, mock_stdout):
-        member1 = Member('John', 'Snow', 47, 'john@example.com', '002', [])
-        member2 = Member('Sam', 'Smith', 33, 'sam@example.com', '003', [])
-
-        self.library.members.append(member1)
-        self.library.members.append(member2)
-
         expected_output = "List of members:\nJohn Snow\nSam Smith\n"
 
         self.library.print_members()
@@ -61,19 +55,28 @@ class TestLibrary(unittest.TestCase):
         self.assertEqual(borrowed_books, [])
 
     def test_get_borrowed_books(self):
-        member1 = Member('John', 'Snow', 47, '002', 'john@example.com', [])
-        member2 = Member('Sam', 'Smith', 33, '003', 'sam@example.com', [])
-        book1 = Book('Book 1', 'Author 1')
-        book2 = Book('Book 2', 'Author 2')
-
-        member1.borrowed_books.append(book1)
-        member2.borrowed_books.append(book2)
-
-        self.library.members.append(member1)
-        self.library.members.append(member2)
+        self.member1.borrowed_books.append(self.book1)
+        self.member2.borrowed_books.append(self.book2)
 
         borrowed_books = self.library.get_borrowed_books()
-        self.assertEqual(borrowed_books, [book1, book2])
+        self.assertEqual(borrowed_books, [self.book1, self.book2])
+
+    def test_get_overdue_books_no_overdue(self):
+        self.member1.borrow_book(self.book1)
+        self.member2.borrow_book(self.book2)
+
+        overdue_books = self.library.get_overdue_books()
+        self.assertEqual(len(overdue_books), 0)
+
+    def test_get_overdue_books_with_overdue(self):
+        self.member1.borrow_book(self.book1)
+        self.member2.borrow_book(self.book2)
+
+        self.book1.return_date = self.today - timedelta(days=20)
+        self.book2.return_date = self.today - timedelta(days=20)
+
+        overdue_books = self.library.get_overdue_books()
+        self.assertEqual(len(overdue_books), 2)
 
 
 if __name__ == '__main__':
