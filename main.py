@@ -15,7 +15,7 @@ if __name__ == '__main__':
     library = Library(None, None)
 
     # Creating an instance of the Librarian class:
-    librarian = Librarian('Constantin', 'Ion', '50', "cosmin.neculache@gmail.com", datetime(2018, 12, 2), library)
+    librarian = Librarian('Constantin', 'Ion', 50, "cosmin.neculache@gmail.com", datetime(2018, 12, 2), library)
 
     # Creating an instance of the SendEmail class:
     email_sender = SendEmail("smtp.gmail.com", 587, librarian.email, password)
