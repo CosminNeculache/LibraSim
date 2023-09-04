@@ -26,6 +26,7 @@ class SendEmail:
                 server.starttls()
                 server.login(self.sender_email, self.password)
                 server.sendmail(self.sender_email, receiver_email, message.as_string())
+                server.quit()
                 self.logger.info(f"Email sent successfully to {receiver_email}")
         except Exception as e:
             self.logger.error(f"Error sending email to {receiver_email}: {str(e)}")
